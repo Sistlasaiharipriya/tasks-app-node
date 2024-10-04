@@ -2,10 +2,6 @@
 const express = require("express");
 const app = express();
 
-// Start the server
-app.listen(3000, () => {
-    console.log(`Task API listening at http://localhost:${port}`);
-});
 
 //or using json 
 app.use(express.json());
@@ -31,3 +27,38 @@ app.post('/tasks', (req, res) => {
       status:"created successfully"
     });
   });
+
+  // Route to update task status
+app.put('/tasks/:id', (req, res) => {
+    const taskId = parseInt(req.params.id);
+    const { title } = req.body;
+  
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+  
+    task.title = title;
+    res.json(task);
+  });
+  
+  // Route to delete a task
+  app.delete('/tasks/:id', (req, res) => {
+    const taskId = parseInt(req.params.id);
+    const taskIndex = tasks.findIndex(t => t.id === taskId);
+  
+    if (taskIndex === -1) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+  
+    tasks.splice(taskIndex, 1);
+    res.status(204).json({
+      "status":"delete success"
+    });
+  });
+
+
+// Start the server
+app.listen(3000, () => {
+    console.log(`Task API listening at http://localhost:3000}`);
+});
